@@ -502,7 +502,7 @@ def main():
                         st.session_state.selected_client = {'id': client_id, 'name': new_client_name}
                         st.session_state.selected_form = None
                         st.session_state.selected_session = None
-                        st.experimental_rerun()
+                        st.rerun()
                 else:
                     st.warning("Please enter a client name.")
 
@@ -559,7 +559,7 @@ def main():
                     if st.button("Create Form"):
                         form_id = create_client_form(conn, client_id, form_title)
                         st.session_state.selected_form = {'id': form_id, 'title': form_title}
-                        st.experimental_rerun()
+                        st.rerun()
                 else:
                     form = st.session_state.selected_form
                     form_id = form['id']
@@ -617,7 +617,7 @@ def main():
                                     conn.commit()
                                     insert_client_info(conn, client_id, form_id, question, answer)
                             st.success("Client information saved successfully!")
-                            st.experimental_rerun()
+                            st.rerun()
 
                     # Display collected information
                     st.subheader("Collected Information")
@@ -637,7 +637,7 @@ def main():
                             if st.button("Create Conversation"):
                                 session_id = create_conversation_session(conn, client_id, form_id, session_title)
                                 st.session_state.selected_session = {'id': session_id, 'title': session_title}
-                                st.experimental_rerun()
+                                st.rerun()
                         else:
                             session_id = session['id']
                             # Load conversation history for the selected session
