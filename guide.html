@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Client Management System User Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+            background-color: white;
+        }
+        header {
+            background-color: #2E86C1;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        nav {
+            background-color: #f4f4f4;
+            padding: 10px;
+        }
+        nav a {
+            color: #2E86C1;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+        h1, h2, h3 {
+            color: #2E86C1;
+        }
+        h1 {
+            margin-top: 0;
+        }
+        ul {
+            list-style-type: disc;
+            margin-left: 40px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            font-family: monospace;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            overflow-x: auto;
+        }
+        footer {
+            background-color: #2E86C1;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 40px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            nav {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Client Management System User Guide</h1>
+</header>
+
+
+<div class="container">
+
+    <h2 id="introduction">Introduction</h2>
+    <p>
+        Welcome to the <strong>Client Management System</strong>, a comprehensive tool designed to help you manage clients, collect their training needs, and generate customized scenario simulations using advanced AI models. This guide will walk you through the features of the application and provide step-by-step instructions on how to use them effectively.
+    </p>
+
+    <hr>
+
+    <h2 id="getting-started">Getting Started</h2>
+
+    
+    <h3>Overview of the Interface</h3>
+    <p>Upon launching, the application is divided into two main sections:</p>
+    <ul>
+        <li><strong>Sidebar</strong>: Used for navigating between clients, forms, and conversations, as well as selecting AI models.</li>
+        <li><strong>Main Page</strong>: Displays detailed information and interactive elements based on your selections in the sidebar.</li>
+    </ul>
+
+    <hr>
+
+    <h2 id="managing-clients">Managing Clients</h2>
+
+    <h3>Adding a New Client</h3>
+    <ol>
+        <li><strong>Access the Sidebar</strong>: Locate the sidebar on the left side of the application.</li>
+        <li><strong>Add New Client</strong>: Click the <strong>"Add New Client"</strong> button.</li>
+        <li><strong>Enter Client Details</strong>:
+            <ul>
+                <li><strong>Client Name</strong>: Input the client's name in the text field.</li>
+                <li><strong>Upload Image</strong> (Optional): Click <strong>"Browse files"</strong> to upload an image of the client.</li>
+            </ul>
+        </li>
+        <li><strong>Save Client</strong>: Click the <strong>"Save Client"</strong> button to add the client to the system.</li>
+        <li><strong>Confirmation</strong>: A success message will confirm the client has been added.</li>
+    </ol>
+
+    <h3>Uploading Client Images</h3>
+    <p>
+        While adding a new client or editing an existing one, you can upload an image to personalize the client profile.
+    </p>
+    <p><strong>Supported image formats</strong>: <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>.</p>
+
+    <hr>
+
+    <h2 id="managing-client-forms">Managing Client Forms</h2>
+
+    <h3>Creating a New Form</h3>
+    <ol>
+        <li><strong>Select a Client</strong>: Click on a client's name in the sidebar to select them.</li>
+        <li><strong>Create New Form</strong>: In the <strong>"Client Forms"</strong> section, click <strong>"Create New Form"</strong>.</li>
+        <li><strong>Form Title</strong>: Enter a title for the form or use the default timestamped title.</li>
+        <li><strong>Create Form</strong>: Click the <strong>"Create Form"</strong> button to generate the form.</li>
+    </ol>
+
+    <h3>Collecting Client Information</h3>
+    <p>Once a form is created:</p>
+    <ol>
+        <li><strong>Business Needs and Goals</strong>: Answer questions related to the client's business challenges and desired outcomes.</li>
+        <li><strong>Learner Profile and Needs</strong>: Provide details about the target audience for the training.</li>
+        <li><strong>Training Preferences</strong>: Specify preferences for training methods and participant engagement.</li>
+        <li><strong>Submit Information</strong>:
+            <ul>
+                <li>Fill in the text areas provided for each question.</li>
+                <li>Click <strong>"Submit"</strong> at the bottom of the form to save the responses.</li>
+            </ul>
+        </li>
+        <li><strong>Confirmation</strong>: A message will confirm that the information has been saved.</li>
+    </ol>
+
+    <h3>Viewing Collected Information</h3>
+    <p>
+        Navigate to the <strong>"Collected Information"</strong> section on the main page.
+    </p>
+    <p>
+        View the table displaying all questions and the corresponding answers provided. This information is used by the AI models to generate tailored recommendations and simulations.
+    </p>
+
+    <hr>
+
+    <h2 id="conversations">Conversations</h2>
+
+    <h3>Starting a New Conversation</h3>
+    <ol>
+        <li><strong>Select a Form</strong>: Ensure you have a form selected for the client.</li>
+        <li><strong>Conversations Section</strong>: Scroll to the <strong>"Conversations"</strong> area.</li>
+        <li><strong>Start New Conversation</strong>: Click <strong>"Start New Conversation"</strong>.</li>
+        <li><strong>Conversation Title</strong>: Enter a title or use the default timestamped title.</li>
+        <li><strong>Create Conversation</strong>: Click the <strong>"Create Conversation"</strong> button.</li>
+        <li><strong>Conversation Interface</strong>: The chat interface will appear on the main page.</li>
+    </ol>
+
+    <h3>Chatbot Interaction</h3>
+    <ul>
+        <li><strong>Chat Input</strong>: Use the text input at the bottom of the chat interface to type your messages.</li>
+        <li><strong>Send Message</strong>: Press <strong>Enter</strong> or click the <strong>"Send"</strong> button.</li>
+        <li><strong>AI Response</strong>: The AI assistant will process your query and provide a response.</li>
+        <li><strong>Conversation History</strong>: All messages are saved and displayed chronologically.</li>
+    </ul>
+
+    <h3>Selecting AI Models</h3>
+    <p>
+        <strong>Model Selection</strong>: In the sidebar, under <strong>"Select AI Model"</strong>, choose from the available AI models:
+    </p>
+    <ul>
+        <li><strong>Ollama</strong></li>
+        <li><strong>Groq</strong></li>
+        <li><strong>GPT-4o-mini</strong></li>
+        <li><strong>Claude 3.5 Sonnet</strong></li>
+    </ul>
+    <p>
+        Different models may provide varying styles of responses. Experiment to find the best fit for your needs.
+    </p>
+
+    <hr>
+
+    <h2 id="scenario-simulation-builder">Scenario Simulation Builder</h2>
+
+    <h3>Generating Scenario Simulations</h3>
+    <ol>
+        <li><strong>Access the Scenario Simulation Builder</strong>: Click on the <strong>"Scenario Simulation Builder"</strong> tab at the top of the main page.</li>
+        <li><strong>Enter a Topic</strong>: Provide a specific topic related to the client's training needs in the input field.</li>
+        <li><strong>Generate Scenario</strong>: Click the <strong>"Generate Scenario Simulation"</strong> button.</li>
+        <li><strong>Processing</strong>: The system will fetch the latest news related to the topic and generate a simulation scenario.</li>
+        <li><strong>View Scenario</strong>: The generated scenario will be displayed under <strong>"Generated Scenario Simulation"</strong>.</li>
+    </ol>
+
+    <h3>Creating Group Activities</h3>
+    <ul>
+        <li><strong>Generate Group Activity</strong>: Click the <strong>"Create Group Activity"</strong> button.</li>
+        <li><strong>Output</strong>: A detailed group activity plan will be generated based on the topic and training preferences.</li>
+        <li><strong>View Activity</strong>: The group activity will be displayed under <strong>"Generated Group Activity"</strong>.</li>
+    </ul>
+
+    <h3>Generating Solutions</h3>
+    <ul>
+        <li><strong>Get Solution</strong>: After generating a scenario, click the <strong>"Get Solution"</strong> button.</li>
+        <li><strong>Processing</strong>: The AI model will provide the best possible solution to the challenges presented in the scenario.</li>
+        <li><strong>View Solution</strong>: The solution will be displayed under <strong>"Solution"</strong>.</li>
+    </ul>
+
+    <hr>
+
+    <h2 id="faq">Frequently Asked Questions</h2>
+
+    <p><strong>Q1: Do I need API keys to use the AI models?</strong></p>
+    <p>
+        <strong>Answer</strong>: Yes, some AI models require API keys (e.g., OpenAI, Anthropic). Ensure you have valid keys and they are set in your environment variables.
+    </p>
+
+    <p><strong>Q2: Can I edit client information after submitting?</strong></p>
+    <p>
+        <strong>Answer</strong>: Yes, you can revisit the form, update the responses, and resubmit to save changes.
+    </p>
+
+    <p><strong>Q3: How is the client data stored?</strong></p>
+    <p>
+        <strong>Answer</strong>: All client data is stored securely in a local SQLite database within the application directory.
+    </p>
+
+    <hr>
+
+    <h2 id="troubleshooting">Troubleshooting</h2>
+
+    <ul>
+        <li>
+            <strong>Database Connection Error</strong>: If you encounter a database connection error, ensure that the application has permission to create and write to files in its directory.
+        </li>
+        <li>
+            <strong>API Errors</strong>: If the AI models are not responding:
+            <ul>
+                <li>Check your internet connection.</li>
+                <li>Verify that your API keys are correctly set in the environment variables.</li>
+                <li>Ensure that the APIs are not experiencing downtime.</li>
+            </ul>
+        </li>
+        <li>
+            <strong>Image Upload Issues</strong>: If you're unable to upload images:
+            <ul>
+                <li>Confirm that the image file is in a supported format.</li>
+                <li>Check that the <code>client_images</code> folder exists and is writable.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <hr>
+
+    <p>
+        Thank you for using the Client Management System. We hope this guide helps you navigate and utilize all the features effectively. If you have any further questions or require assistance, please contact the support team.
+    </p>
+
+</div>
+
+<footer>
+    <p>&copy; 2024 Revision AI - Client Learning Management System</p>
+</footer>
+
+</body>
+</html>
