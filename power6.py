@@ -486,10 +486,8 @@ def main():
         st.markdown("---")
         if st.button("Add New Client"):
             st.session_state.show_add_client = True
-        else:
-            st.session_state.show_add_client = False
 
-        if 'show_add_client' in st.session_state and st.session_state.show_add_client:
+        if st.session_state.get('show_add_client'):
             new_client_name = st.text_input("Enter Client Name")
             uploaded_image = st.file_uploader("Upload client image", type=["jpg", "png", "jpeg"], key="new_image_uploader")
             if st.button("Save Client"):
@@ -502,6 +500,7 @@ def main():
                         st.session_state.selected_client = {'id': client_id, 'name': new_client_name}
                         st.session_state.selected_form = None
                         st.session_state.selected_session = None
+                        st.session_state.show_add_client = False
                         st.rerun()
                 else:
                     st.warning("Please enter a client name.")
