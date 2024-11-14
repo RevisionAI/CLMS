@@ -307,13 +307,28 @@ def get_latest_news(query):
         st.error(f"Serper API error: {e}")
         return "Error: Unable to fetch latest news."
 
-def call_llm_api(prompt, model_choice):
+def call_llm_api(messages, model_choice):
     if model_choice == "Ollama":
         # Ollama API call
         try:
+            # Combine all messages into a single prompt
+            prompt = ''
+            for message in messages:
+                role = 'Human' if message['role'] == 'user' else 'Assistant'
+                prompt += f"{role}: {message['content']}\n\n"
+            prompt += 'Assistant:'
+
             response = requests.post(OLLAMA_API_URL, json={"model": "llama2", "prompt": prompt})
             response.raise_for_status()
-            return response.json().get("response", "No response from Ollama.")
+            # Handle potential streaming responses
+            response_text = ''
+            response_json = response.json()
+            if isinstance(response_json, list):
+                for part in response_json:
+                    response_text += part.get("response", "")
+            else:
+                response_text = response_json.get("response", "No response from Ollama.")
+            return response_text.strip()
         except requests.RequestException as e:
             st.error(f"Ollama API error: {e}")
             return "Error: Unable to get response from Ollama."
@@ -323,9 +338,6 @@ def call_llm_api(prompt, model_choice):
             "Authorization": f"Bearer {GROQ_API_KEY}",
             "Content-Type": "application/json"
         }
-        messages = [
-            {"role": "user", "content": prompt}
-        ]
         data = {
             "model": "llama-2-70b-chat",
             "messages": messages,
@@ -335,7 +347,7 @@ def call_llm_api(prompt, model_choice):
         try:
             response = requests.post(GROQ_API_URL, headers=headers, json=data)
             response.raise_for_status()
-            return response.json()["choices"][0]["message"]["content"]
+            return response.json()["choices"][0]["message"]["content"].strip()
         except requests.RequestException as e:
             st.error(f"Groq API error: {e}")
             return f"Error: Unable to get response from Groq."
@@ -345,9 +357,6 @@ def call_llm_api(prompt, model_choice):
             "Authorization": f"Bearer {OPENAI_API_KEY}",
             "Content-Type": "application/json"
         }
-        messages = [
-            {"role": "user", "content": prompt}
-        ]
         data = {
             "model": "gpt-4",
             "messages": messages,
@@ -357,7 +366,7 @@ def call_llm_api(prompt, model_choice):
         try:
             response = requests.post(OPENAI_API_URL, headers=headers, json=data)
             response.raise_for_status()
-            return response.json()["choices"][0]["message"]["content"]
+            return response.json()["choices"][0]["message"]["content"].strip()
         except requests.RequestException as e:
             st.error(f"OpenAI API error: {e}")
             return f"Error: Unable to get response from OpenAI."
@@ -367,9 +376,20 @@ def call_llm_api(prompt, model_choice):
             "x-api-key": ANTHROPIC_API_KEY,
             "Content-Type": "application/json"
         }
-        prompt_formatted = f"\n\nHuman: {prompt}\n\nAssistant:"
+        # Convert messages to Anthropic's prompt format
+        anthropic_prompt = ''
+        for message in messages:
+            if message['role'] == 'system':
+                # Include system messages directly
+                anthropic_prompt += f"{message['content']}\n\n"
+            elif message['role'] == 'user':
+                anthropic_prompt += f"\n\nHuman: {message['content']}"
+            elif message['role'] == 'assistant':
+                anthropic_prompt += f"\n\nAssistant: {message['content']}"
+        anthropic_prompt += "\n\nAssistant:"
+
         data = {
-            "prompt": prompt_formatted,
+            "prompt": anthropic_prompt,
             "model": "claude-2",
             "max_tokens_to_sample": 1000,
             "temperature": 0.7,
@@ -378,7 +398,7 @@ def call_llm_api(prompt, model_choice):
         try:
             response = requests.post(ANTHROPIC_API_URL, headers=headers, json=data)
             response.raise_for_status()
-            return response.json()["completion"]
+            return response.json()["completion"].strip()
         except requests.RequestException as e:
             st.error(f"Anthropic API error: {e}")
             return f"Error: Unable to get response from Anthropic."
@@ -386,13 +406,16 @@ def call_llm_api(prompt, model_choice):
         return "Error: Invalid model choice."
 
 def generate_scenario(prompt, model_choice):
-    return call_llm_api(prompt, model_choice)
+    messages = [{"role": "user", "content": prompt}]
+    return call_llm_api(messages, model_choice)
 
 def generate_solution(prompt, model_choice):
-    return call_llm_api(prompt, model_choice)
+    messages = [{"role": "user", "content": prompt}]
+    return call_llm_api(messages, model_choice)
 
 def generate_group_activity(prompt, model_choice):
-    return call_llm_api(prompt, model_choice)
+    messages = [{"role": "user", "content": prompt}]
+    return call_llm_api(messages, model_choice)
 
 # Chatbot function
 def chatbot_query(conn, query, conversation_history, model_choice, client_id, form_id):
@@ -412,28 +435,16 @@ The following is information about the client:
     system_message += """
 Based on the above information, provide insightful analysis and recommendations for the client's training program."""
 
-    # Prepare messages
+    # Prepare messages, including the conversation history
     messages = [
         {"role": "system", "content": system_message},
-        *[{"role": msg["role"], "content": msg["content"]} for msg in conversation_history],
+        *conversation_history,
         {"role": "user", "content": query}
     ]
 
-    # Use the call_llm_api function
-    if model_choice in ["Ollama", "Groq", "GPT-4o-mini", "Claude 3.5 Sonnet"]:
-        if model_choice == "Ollama":
-            # For Ollama, combine messages into a single prompt
-            prompt = system_message + "\nConversation history:\n"
-            for message in conversation_history:
-                prompt += f"{'Human' if message['role'] == 'user' else 'AI'}: {message['content']}\n"
-            prompt += f"Human: {query}\nAI:"
-            return call_llm_api(prompt, model_choice)
-        else:
-            # For other models, use messages
-            prompt = query  # For simplicity, we'll use query as the prompt
-            return call_llm_api(prompt, model_choice)
-    else:
-        return "Error: Invalid model choice."
+    # Call the LLM API with the messages
+    response = call_llm_api(messages, model_choice)
+    return response
 
 # Main function
 def main():
@@ -677,26 +688,40 @@ def main():
             form = st.session_state.selected_form
             form_id = form['id']
 
-            # Retrieve training preferences from client_info
+            # Retrieve all client information from client_info
             client_info = get_client_info(conn, client_id, form_id)
             if client_info.empty:
                 st.warning("No information available for this form.")
             else:
-                # Extract training preferences
-                training_preferences_questions = [
+                # Combine all relevant questions and answers
+                all_questions = [
+                    # Business Needs and Goals
+                    "What are the key business challenges or opportunities your organisation is currently facing?",
+                    "What are the desired outcomes of this training program? (e.g., improved productivity, enhanced decision-making, increased innovation, stronger teamwork)",
+                    "What specific skills or knowledge gaps do you want to address through this training?",
+                    "What is your organisation's industry and what are the key competitive dynamics you are facing?",
+                    "Are there any specific industry benchmarks or best practices you would like the training to incorporate?",
+                    # Learner Profile and Needs
+                    "Who is the target audience for this training program? (e.g., job roles, seniority levels, departments)",
+                    "What is the approximate number of participants you plan to include in the training?",
+                    "What are the participants' current levels of knowledge and skills related to the training topic?",
+                    "What are the learning styles and preferences of your target audience? (e.g., visual, auditory, kinesthetic, hands-on activities, group discussions)",
+                    "What are the participants' expectations and motivations for attending this training?",
+                    # Training Preferences
                     "What level of interactivity and participant engagement do you envision for this training program?",
                     "What types of activities or learning methods would you like to see incorporated to promote active participation and knowledge retention? (e.g., business simulations, case studies, group discussions, role-playing)",
                     "How do you envision participants applying the knowledge and skills they gain from this training in their day-to-day work?"
                 ]
 
-                training_preferences = ""
-                for question in training_preferences_questions:
+                # Extract the user's answers for all questions
+                user_responses = ""
+                for question in all_questions:
                     answers = client_info[client_info['question'] == question]['answer']
                     if not answers.empty:
-                        training_preferences += f"**{question}**\n{answers.iloc[0]}\n\n"
+                        user_responses += f"**{question}**\n{answers.iloc[0]}\n\n"
 
-                if not training_preferences:
-                    st.warning("No training preferences available to generate simulation.")
+                if not user_responses:
+                    st.warning("No client information available to generate simulation.")
                 else:
                     # Require the user to enter a topic
                     st.subheader("Scenario Simulation")
@@ -714,11 +739,11 @@ def main():
                                     # Get news articles related to the topic
                                     news_articles = get_latest_news(query)
 
-                                    # Prepare the prompt for the LLM, including the topic
+                                    # Prepare the prompt for the LLM, including the topic and user's form content
                                     prompt = f"""You are an AI assistant tasked with creating a real-world scenario simulation for corporate training focusing on the topic: "{query}".
-The simulation should be based on the following training preferences:
+The simulation should be based on the following information provided by the client:
 
-{training_preferences}
+{user_responses}
 
 Incorporate the latest news and current affairs related to "{query}" into the simulation to make it relevant.
 
@@ -726,7 +751,7 @@ Here are some recent news articles:
 
 {news_articles}
 
-Please create a realistic and engaging scenario that challenges students to navigate and develop the best solution."""
+Please create a realistic and engaging scenario that challenges participants to navigate and develop the best solution."""
                                     # Generate the scenario using the selected LLM
                                     scenario = generate_scenario(prompt, model_choice)
 
@@ -741,9 +766,9 @@ Please create a realistic and engaging scenario that challenges students to navi
                                 with st.spinner("Generating group activity..."):
                                     # Prepare the prompt for the group activity
                                     prompt = f"""You are an AI assistant tasked with creating a group activity for corporate training focusing on the topic: "{query}".
-The activity should be interactive and engaging, and based on the following training preferences:
+The activity should be interactive and engaging, and based on the following information provided by the client:
 
-{training_preferences}
+{user_responses}
 
 Please create a detailed group activity that facilitates learning and collaboration among participants."""
                                     # Generate the group activity using the selected LLM
